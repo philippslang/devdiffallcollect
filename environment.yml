@@ -1,0 +1,9 @@
+name: djangorest
+dependencies:
+  - python=3.5
+  - numpy
+  - requests
+  - pandas
+  - matplotlib
+  - markdown
+  - django
