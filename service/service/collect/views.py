@@ -1,6 +1,12 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework import views
+from rest_framework import mixins
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 from .models import Result
 from .serializers import ResultSerializer
 
@@ -18,11 +24,20 @@ def result(request, format=None):
 
 
 @api_view(['GET'])
-def results(request, format=None):
+def results_v0(request, format=None):
     """
-    List all posted devDiffAll.py results.
+    Lists 50 most recently posted devDiffAll.py results.
     """
-    allresults = Result.objects.all()
+    allresults = Result.objects.all().order_by('-posted')[:50]
     serializer = ResultSerializer(allresults, many=True)
     return Response(serializer.data)
 
+    
+class ResultsView(viewsets.ModelViewSet):
+    """
+    Access submitted results.
+    """
+    #authentication_classes = (authentication.TokenAuthentication,)
+    #permission_classes = (permissions.AllowAny,)
+    queryset = Result.objects.all().order_by('-posted')
+    serializer_class = ResultSerializer
