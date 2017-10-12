@@ -16,8 +16,15 @@ def result(request, format=None):
     """
     Post a devDiffAll.py result.
     """
+    if 0: # shorthand to delete all previous data
+        Result.objects.all().delete()
+    if 0: # delete entries with no duration data
+        delset = Result.objects.all()
+        for obj in delset:
+            if obj.duration_ix == 'NA':
+                obj.delete()
     serializer = ResultSerializer(data=request.data)
-    if serializer.is_valid():        
+    if serializer.is_valid():   
         serializer.save()       
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
